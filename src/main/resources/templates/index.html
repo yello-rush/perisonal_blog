@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rush的个人博客 - 记录学习与成长</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+</head>
+<body>
+    <!-- 全屏欢迎页面 -->
+    <section class="hero-section" id="heroSection">
+        <!-- 顶部导航（透明） -->
+        <header class="hero-header">
+            <div class="container">
+                <h1 class="hero-logo">Rush</h1>
+                <div class="hero-datetime">
+                    <div class="hero-date-info" id="heroDateInfo">2024年1月1日 星期一</div>
+                    <div class="hero-lunar-info" id="heroLunarInfo">甲辰年(龙年) 腊月初一</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主标题内容 -->
+        <div class="hero-content">
+            <h1 class="hero-title fade-in-1">Rush-个人博客</h1>
+            <p class="hero-subtitle fade-in-2">弱小但有梦想</p>
+        </div>
+        
+        <!-- 下滑提示箭头 -->
+        <div class="scroll-hint">
+            <div class="scroll-arrow">↓</div>
+            <span class="scroll-text">向下滚动</span>
+        </div>
+    </section>
+
+    <!-- 原博客内容区域 -->
+    <section class="blog-section" id="blogSection">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="container">
+                <h1 class="logo">欢迎来到我的个人博客</h1>
+                <div class="datetime-display">
+                    <div class="date-info" id="dateInfo">2024年1月1日 星期一</div>
+                    <div class="lunar-info" id="lunarInfo">甲辰年(龙年) 腊月初一</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+    <main class="main">
+        <div class="container">
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <!-- 个人信息卡片 -->
+                <div class="profile-card">
+                    <div class="avatar">
+                        <img src="/images/rush-avatar.jpg" alt="Rush头像" onerror="this.src='/images/default-avatar.svg'">
+                    </div>
+                    <h3 class="name">Rush</h3>
+                    <p class="title">软件工程专业大学生 | 运维学习者</p>
+                    
+                    <!-- 联系方式（悬停展开） -->
+                    <div class="contact-info">
+                        <div class="contact-toggle">联系方式</div>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <span class="contact-icon">💬</span>
+                                <span class="contact-text">微信：linux-king</span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-icon">📧</span>
+                                <span class="contact-text">邮箱：284690589@qq.com</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 网站运行时间 -->
+                    <div class="site-info">
+                        <div class="info-item">
+                            <span class="label">网站已运行</span>
+                            <span class="value" id="runtime">计算中...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">文章总数</span>
+                            <span class="value" th:text="${#lists.size(blogs)}">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 搜索功能卡片 -->
+                <div class="search-card">
+                    <div class="search-header">
+                        <h3 class="search-title">🔍 搜索文章</h3>
+                    </div>
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <input type="text" id="searchInput" class="search-input" placeholder="搜索标题、内容或摘要...">
+                            <button id="clearSearch" class="clear-search-btn" title="清空搜索">✕</button>
+                        </div>
+                        <div class="search-stats" id="searchStats">
+                            <span class="search-count">共找到 <span id="searchCount" th:text="${#lists.size(blogs)}">0</span> 篇文章</span>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- 文章列表 -->
+            <section class="content">
+                <!-- 文章列表视图 -->
+                <div class="posts-view">
+                    <div class="posts-header">
+                        <h2>学习笔记</h2>
+                        <p class="subtitle">记录运维学习过程中的问题与解决方案,希望对你有帮助</p>
+                        
+                        <!-- 分类筛选和排序 -->
+                        <div class="filter-controls">
+                            <div class="category-filter">
+                                <div class="filter-label">分类：</div>
+                                <div class="category-buttons">
+                                    <button class="category-btn active" data-category="all">全部</button>
+                                    <button class="category-btn" th:each="category : ${categories}" 
+                                            th:data-category="${category.id}"
+                                            th:text="${category.name}"
+                                            th:data-name="${category.name}">分类名</button>
+                                </div>
+                            </div>
+                            
+                            <div class="sort-filter">
+                                <div class="filter-label">排序：</div>
+                                <div class="sort-buttons">
+                                    <button class="sort-btn" data-sort="latest">最新发布</button>
+                                    <button class="sort-btn" data-sort="popular">阅读量</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="posts-list">
+                        <article class="post-card" th:each="blog : ${blogs}" 
+                                th:data-id="${blog.id}"
+                                th:data-title="${blog.title}"
+                                th:data-content="${blog.content}"
+                                th:data-author="${blog.author}"
+                                                th:data-date="${blog.formattedCreatedAt}"
+                th:data-read-count="${blog.viewCount}"
+                                th:data-category-id="${blog.categoryId}"
+                                th:data-created-time="${blog.createdAt}">
+                            <div class="post-header">
+                                <h3 class="post-title">
+                                    <span th:text="${blog.title}">文章标题</span>
+                                </h3>
+                                <div class="post-meta">
+                                    <span class="category-tag" 
+                                          th:if="${blog.categoryId != null}"
+                                          th:data-category-id="${blog.categoryId}">
+                                        <span th:each="cat : ${categories}" 
+                                              th:if="${cat.id == blog.categoryId}" 
+                                              th:text="${cat.name}">分类</span>
+                                    </span>
+                                                                    <span class="date" th:text="${blog.formattedCreatedAt}">发布时间</span>
+                                <span class="author" th:text="'by ' + ${blog.author}">作者</span>
+                                <span class="read-count" th:text="${blog.viewCount} + ' 阅读'">阅读量</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p class="post-summary" th:text="${blog.summary}">文章摘要</p>
+                            </div>
+                            <div class="post-footer">
+                                <button class="read-more-btn">点击阅读全文</button>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                
+                <!-- 文章详情视图 -->
+                <div class="article-view" id="articleView">
+                    <div class="article-header">
+                        <button class="back-btn" id="backBtn">← 返回列表</button>
+                        <h1 class="article-title" id="articleTitle">文章标题</h1>
+                        <div class="article-meta" id="articleMeta">
+                            <span class="article-date"></span>
+                            <span class="article-author"></span>
+                            <span class="article-read-count"></span>
+                        </div>
+                    </div>
+                    <div class="article-content" id="articleContent">
+                        <div class="content-body"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 完全独立的评论区域 - 与文章框体分离 -->
+            <section class="comments-section-wrapper" id="commentsSectionContainer" style="display: none;">
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h3 class="comments-title">
+                            <span class="comment-icon">💬</span>
+                            <span id="commentCountDisplay">0 条评论</span>
+                        </h3>
+                    </div>
+
+                    <!-- 评论提交表单（无头像） -->
+                    <div class="comment-form-container">
+                        <div class="comment-form">
+                            <input type="hidden" id="currentBlogId" value="">
+                            <div class="comment-form-content-only">
+                                <textarea 
+                                    id="commentContentIndex" 
+                                    class="comment-textarea" 
+                                    placeholder="输入评论内容..."
+                                    rows="3"></textarea>
+                            </div>
+                            <div class="comment-form-footer">
+                                <div class="comment-form-inputs">
+                                    <input type="text" id="commentNicknameIndex" class="comment-input" placeholder="昵称" required>
+                                    <input type="email" id="commentEmailIndex" class="comment-input" placeholder="邮箱" required>
+                                </div>
+                                <button type="button" id="submitCommentIndex" class="submit-comment-btn">发表评论</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 评论列表 -->
+                    <div class="comments-list" id="commentsListIndex">
+                        <!-- 动态加载评论内容 -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    </section>
+
+    <!-- Toast提示组件 -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-main">&copy; 2024 Rush的个人博客. 记录学习，分享成长.</p>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <script th:src="@{/js/main.js}"></script>
+    <script th:inline="javascript">
+        // 传递后端数据到前端
+        window.siteStartTime = /*[[${startTime}]]*/ '2024-01-01 00:00:00';
+        window.quotes = /*[[${quotes}]]*/ [];
+    </script>
+</body>
+</html>

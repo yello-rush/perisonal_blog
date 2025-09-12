@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${blog.title} + ' - Rush的个人博客'">文章详情 - Rush的个人博客</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/article-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/article-content.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Rush的个人博客</h1>
+            <div class="datetime-display">
+                <div class="date-info" id="dateInfo">2024年1月1日 星期一</div>
+                <div class="lunar-info" id="lunarInfo">甲辰年(龙年) 腊月初一</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main">
+        <div class="container">
+            <!-- 返回按钮 -->
+            <div class="back-nav">
+                <a th:href="@{/#blogSection}" class="back-btn">← 返回首页</a>
+            </div>
+
+            <!-- 文章详情 -->
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title" th:text="${blog.title}">文章标题</h1>
+                    <div class="article-meta">
+                        <span class="date" th:text="'发布于 ' + ${blog.formattedCreatedAt}">发布时间</span>
+                        <span class="author" th:text="'作者：' + ${blog.author}">作者</span>
+                        <span class="read-count" th:text="${blog.viewCount} + ' 次阅读'">阅读量</span>
+                    </div>
+                </header>
+
+                <div class="article-content">
+                    <!-- 文章正文 -->
+                    <div class="article-body">
+                        <!-- 使用th:unescape渲染HTML内容 -->
+                        <div th:unescape="${blog.content}"></div>
+                    </div>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="tags">
+                        <span class="tag">技术分享</span>
+                        <span class="tag">原创</span>
+                    </div>
+                    <div class="actions">
+                        <button class="action-btn like-btn">👍 点赞</button>
+                        <button class="action-btn share-btn">🔗 分享</button>
+                    </div>
+                </footer>
+            </article>
+
+            <!-- 评论区域 -->
+            <section class="comments-section">
+                <div class="comments-header">
+                    <h3 class="comments-title">
+                        <span class="comment-icon">💬</span>
+                        <span th:text="${commentCount != null ? commentCount + ' 条评论' : '0 条评论'}">0 条评论</span>
+                    </h3>
+                </div>
+
+                <!-- 评论提交表单 -->
+                <div class="comment-form-container">
+                    <div class="comment-form">
+                        <input type="hidden" id="blogId" th:value="${blog.id}">
+                        <div class="comment-form-header">
+                            <div class="comment-avatar">
+                                <img th:src="@{/images/default-avatar.svg}" alt="用户头像" class="avatar-img">
+                            </div>
+                            <div class="comment-form-content">
+                                <textarea 
+                                    id="commentContent" 
+                                    class="comment-textarea" 
+                                    placeholder="输入评论内容..."
+                                    rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="comment-form-footer">
+                            <div class="comment-form-inputs">
+                                <input type="text" id="commentNickname" class="comment-input" placeholder="昵称" required>
+                                <input type="email" id="commentEmail" class="comment-input" placeholder="邮箱" required>
+                            </div>
+                            <button type="button" id="submitComment" class="submit-comment-btn">发表评论</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 评论列表 -->
+                <div class="comments-list" id="commentsList">
+                    <!-- 使用 Thymeleaf 渲染评论 -->
+                    <div th:each="comment : ${comments}" class="comment-item" th:data-comment-id="${comment.id}">
+                        <div class="comment-avatar">
+                            <img th:src="@{${comment.avatar}}" alt="头像" class="avatar-img">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-user-info">
+                                    <span class="comment-username" th:text="${comment.nickname}">用户名</span>
+                                    <span th:if="${comment.userRole != null and comment.userRole.name() == 'blogger'}" 
+                                          class="user-role-tag blogger">博主</span>
+                                    <span th:if="${comment.userRole != null and comment.userRole.name() == 'reader'}" 
+                                          class="user-role-tag reader">读者</span>
+                                    <span th:if="${comment.userRole != null and comment.userRole.name() == 'admin'}" 
+                                          class="user-role-tag admin">管理员</span>
+                                </div>
+                                <div class="comment-actions">
+                                    <span class="comment-time" th:text="${comment.formattedCreatedAt}">时间</span>
+                                    <button class="reply-btn" th:data-comment-id="${comment.id}">回复</button>
+                                </div>
+                            </div>
+                            <div class="comment-text" th:text="${comment.content}">评论内容</div>
+                            
+                            <!-- 回复区域容器 -->
+                            <div class="replies-container" th:id="'replies-' + ${comment.id}">
+                                <!-- 动态加载回复内容 -->
+                            </div>
+                            
+                            <!-- 回复表单（初始隐藏） -->
+                            <div class="reply-form" th:id="'reply-form-' + ${comment.id}" style="display: none;">
+                                <div class="comment-form">
+                                    <div class="comment-form-header">
+                                        <div class="comment-avatar">
+                                            <img th:src="@{/images/default-avatar.svg}" alt="用户头像" class="avatar-img">
+                                        </div>
+                                        <div class="comment-form-content">
+                                            <textarea 
+                                                th:id="'replyContent-' + ${comment.id}"
+                                                class="comment-textarea reply-textarea" 
+                                                placeholder="输入回复内容..."
+                                                rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="comment-form-footer">
+                                        <div class="comment-form-inputs">
+                                            <input type="text" th:id="'replyNickname-' + ${comment.id}" class="comment-input" placeholder="昵称" required>
+                                            <input type="email" th:id="'replyEmail-' + ${comment.id}" class="comment-input" placeholder="邮箱" required>
+                                        </div>
+                                        <div class="reply-form-actions">
+                                            <button type="button" class="cancel-reply-btn" th:data-comment-id="${comment.id}">取消</button>
+                                            <button type="button" class="submit-reply-btn" th:data-comment-id="${comment.id}">回复</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 相关推荐 -->
+            <section class="related-posts">
+                <h3>📖 相关推荐</h3>
+                <div class="related-list">
+                    <div class="related-item">
+                        <a th:href="@{/}">查看更多精彩文章</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Rush的个人博客. 记录学习，分享成长.</p>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/article-detail.js}"></script>
+</body>
+</html>

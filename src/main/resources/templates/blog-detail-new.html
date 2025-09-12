@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${blog.title}">文章详情</title>
+    <meta name="description" th:content="${blog.summary}">
+    <meta name="keywords" th:content="${blog.title}">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/article-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/article-content.css}">
+    
+    <!-- 代码高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- 图标字体 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 - 参考首页设计 by=>friday -->
+    <header class="header">
+        <!-- Rush和日期信息栏 by=>friday -->
+        <div class="hero-header-detail">
+            <div class="nav-container">
+                <h1 class="hero-logo">
+                    <a th:href="@{/}" style="color: inherit; text-decoration: none;">Rush</a>
+                </h1>
+                <div class="hero-datetime">
+                    <div class="hero-date-info" id="heroDateInfo">2024年1月1日 星期一</div>
+                    <div class="hero-lunar-info" id="heroLunarInfo">甲辰年(龙年) 腊月初一</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 返回主页按钮 by=>friday -->
+        <div class="back-home-bar">
+            <div class="nav-container">
+                <a th:href="@{/}" class="back-home-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>返回主页</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 文章标题区域 - 按照图片效果重新设计 by=>friday -->
+    <section class="article-hero">
+        <div class="hero-content">
+            <!-- 面包屑导航 by=>friday -->
+            <div class="breadcrumb">
+                <a th:href="@{/}">首页</a>
+                <span class="separator">></span>
+                <span th:if="${category != null}" th:text="${category.name}">未分类</span>
+                <span th:if="${category == null}">未分类</span>
+            </div>
+            
+            <h1 class="article-title" th:text="${blog.title}">零基础玩转 Docker：一份简单粗暴的入门指南</h1>
+            
+            <div class="article-meta">
+                <span class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span th:text="${blog.author}">Rush</span>
+                </span>
+                <span class="meta-item">
+                    <i class="fas fa-eye"></i>
+                    <span th:text="${blog.viewCount} + ' 次阅读'">0 次阅读</span>
+                </span>
+                <span class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span th:text="${blog.formattedCreatedAt}">2025-08-10 14:15</span>
+                </span>
+                <span class="meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span th:text="${blog.formattedCreatedAt}">2025-08-10 14:15</span>
+                </span>
+                <span class="meta-item">
+                    <i class="fas fa-comments"></i>
+                    <span th:text="${commentCount}">2</span>
+                </span>
+                <span class="meta-item category-meta">
+                    <i class="fas fa-folder"></i>
+                    <span th:if="${category != null}" th:text="${category.name}">未分类</span>
+                    <span th:if="${category == null}">未分类</span>
+                </span>
+            </div>
+            
+            <!-- 元信息说明文字 by=>friday -->
+            <div class="meta-description">
+                作者 · 阅读量 · 发布日期 · 更新日期 · 评论数 · 分类
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="content-container">
+            <!-- 左侧作者信息卡片 - 参考首页设计 by=>friday -->
+            <aside class="author-sidebar">
+                <div class="profile-card">
+                    <div class="avatar">
+                        <img th:src="@{/images/rush-avatar.jpg}" alt="Rush头像" onerror="this.src='/images/default-avatar.svg'">
+                    </div>
+                    <h3 class="name" th:text="${blog.author}">Rush</h3>
+                    <p class="title">软件工程专业大学生 | 运维学习者</p>
+                    
+                    <!-- 分享按钮移到这里 by=>friday -->
+                    <div class="share-section">
+                        <button class="share-btn" onclick="shareArticle()">
+                            <i class="fas fa-share"></i>
+                            <span>分享</span>
+                        </button>
+                    </div>
+                    
+                    <!-- 联系方式 -->
+                    <div class="contact-info">
+                        <div class="contact-toggle">联系方式</div>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <span class="contact-icon">💬</span>
+                                <span class="contact-text">微信：linux-king</span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-icon">📧</span>
+                                <span class="contact-text">邮箱：284690589@qq.com</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 查看更多文章按钮 -->
+                    <div class="more-articles-section">
+                        <a th:href="@{/#blogSection}" class="more-articles-btn">
+                            <i class="fas fa-list"></i>
+                            <span>查看更多文章</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右侧文章内容 -->
+            <article class="article-content">
+                <!-- 文章更新提示 -->
+                <div class="article-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <span>本文最后更新于 <span th:text="${blog.formattedCreatedAt}">2025-07-12</span>，如有问题或建议，请留言或者者邮箱联系。感谢您的阅读。</span>
+                </div>
+                
+                <!-- 文章正文 -->
+                <div class="article-body">
+                    <!-- 使用th:utext渲染HTML内容 -->
+                    <div th:utext="${blog.content}">文章内容</div>
+                </div>
+                
+
+                
+
+            </article>
+        </div>
+    </main>
+
+    <!-- 评论区域 -->
+    <section class="comments-section">
+        <div class="comments-container">
+            <div class="comments-header">
+                <h3>评论 (<span th:text="${commentCount}">0</span>)</h3>
+            </div>
+            
+            <!-- 评论表单 -->
+            <div class="comment-form">
+                <form id="commentForm">
+                    <input type="hidden" id="blogId" th:value="${blog.id}">
+                    <div class="form-row">
+                        <input type="text" id="nickname" placeholder="昵称" required>
+                        <input type="email" id="email" placeholder="邮箱" required>
+                    </div>
+                    <textarea id="content" placeholder="说点什么吧..." required></textarea>
+                    <button type="submit">发表评论</button>
+                </form>
+            </div>
+            
+            <!-- 评论列表 -->
+            <div class="comments-list">
+                <div th:each="comment : ${comments}" class="comment-item">
+                    <div class="comment-avatar">
+                        <img th:src="${comment.avatar}" alt="头像">
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <div class="comment-user-info">
+                                <span class="comment-author" th:text="${comment.nickname}">用户名</span>
+                                <span class="comment-role" th:text="${comment.roleDisplayName}">游客</span>
+                            </div>
+                            <div class="comment-actions">
+                                <span class="comment-time" th:text="${comment.formattedCreatedAt}">时间</span>
+                                <button class="reply-btn" th:onclick="'replyComment(' + ${comment.id} + ')'">回复</button>
+                            </div>
+                        </div>
+                        <div class="comment-text" th:text="${comment.content}">评论内容</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/article-detail.js}"></script>
+    
+    <script th:inline="javascript">
+        // 传递文章ID到JavaScript
+        const blogId = /*[[${blog.id}]]*/ 0;
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 代码高亮
+            hljs.highlightAll();
+            
+            // 生成文章目录
+            generateTOC();
+            
+            // 初始化评论功能
+            initComments();
+        });
+    </script>
+</body>
+</html>

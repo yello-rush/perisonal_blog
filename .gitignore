@@ -1,0 +1,93 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+.metadata
+
+# 编译输出
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+
+# 日志文件
+*.log
+logs/
+*.log.*
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# MySQL数据文件 (保留SQL脚本，排除数据库文件)
+mysql-data/*
+!mysql-data/
+!mysql-data/*.sql
+
+# Docker数据卷 (这些在运行时生成)
+docker-data/
+mysql_data/
+redis_data/
+
+# 环境配置文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.backup
+
+# 应用运行时文件
+*.pid
+*.sock
+
+# 测试覆盖率报告
+target/site/
+
+# Spring Boot
+application-local.yml
+application-local.properties
+
+# Cloudflared凭据文件 (如果有的话)
+cloudflared/credentials.json
+*.pem
+*.key
+*.crt
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+*.7z

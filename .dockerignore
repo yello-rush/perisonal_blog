@@ -1,0 +1,72 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# MySQL data files
+mysql-data/*.ibd
+mysql-data/*.frm
+mysql-data/ib_*
+mysql-data/mysql/
+mysql-data/performance_schema/
+mysql-data/sys/
+mysql-data/#*
+
+# Documentation
+README.md
+*.md
+
+# Runtime
+*.tmp
+*.temp
+*.pid
+*.seed
+*.pid.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Application
+application-dev.yml
+application-prod.yml
+
+# Others
+node_modules/
+npm-debug.log*
