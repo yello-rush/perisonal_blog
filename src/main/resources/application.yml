@@ -1,5 +1,4 @@
 spring:
-  # 数据源配置 - 优先使用你的MySQL root用户 
   datasource:
     url: jdbc:mysql://localhost:3306/personal_blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&autoReconnect=true
     username: root
@@ -12,8 +11,8 @@ spring:
   # JPA配置
   jpa:
     hibernate:
-      ddl-auto: update  # 开发环境使用update，生产环境建议使用validate
-    show-sql: true      # 显示SQL语句（开发环境）
+      ddl-auto: update 
+    show-sql: true 
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -21,7 +20,7 @@ spring:
   
   # Thymeleaf模板引擎配置
   thymeleaf:
-    cache: false        # 开发环境关闭缓存
+    cache: false        
     encoding: UTF-8
     mode: HTML
     prefix: classpath:/templates/
@@ -62,6 +61,25 @@ spring:
       enabled: true
       path: /h2-console
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: personal-blog
 ---
 # 生产环境配置
 spring:
@@ -70,10 +88,10 @@ spring:
       on-profile: prod
   jpa:
     hibernate:
-      ddl-auto: validate  # 生产环境不自动修改表结构
-    show-sql: false       # 生产环境不显示SQL
+      ddl-auto: validate  
+    show-sql: false       
   thymeleaf:
-    cache: true           # 生产环境开启缓存
+    cache: true           
 
 logging:
   level:

@@ -74,7 +74,7 @@ services:
     profiles:
       - nginx
 
-  # Redis 缓存（可选）
+  # Redis 缓存
   redis:
     image: redis:7-alpine
     container_name: blog-redis
@@ -89,7 +89,106 @@ services:
       - blog-network
     profiles:
       - redis
+      
+prometheus:
+    image: prom/prometheus:latest
+    container_name: blog-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    restart: unless-stopped
+    networks:
+      - blog-network
 
+  # Grafana - 可视化展示
+  grafana:
+    image: grafana/grafana:latest
+    container_name: blog-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+  # Node Exporter - 系统资源监控
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: blog-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+  # MySQL Exporter - 数据库监控
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: blog-mysql-exporter
+    ports:
+      - "9104:9104"
+    environment:
+      - DATA_SOURCE_NAME=root:root123456@(mysql:3306)/personal_blog
+    restart: unless-stopped
+    networks:
+      - blog-network
+    depends_on:
+      - mysql
+
+  # Redis Exporter - 缓存监控（可选）
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: blog-redis-exporter
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis:6379
+    restart: unless-stopped
+    networks:
+      - blog-network
+    depends_on:
+      - redis
+    profiles:
+      - redis
+
+# 扩展现有网络和数据卷
+networks:
+  blog-network:
+    external: true
+    name: blog-network
+
+volumes:
+  prometheus_data:
+    name: blog_prometheus_data
+  grafana_data:
+    name: blog_grafana_data
 # 网络配置
 networks:
   blog-network:
