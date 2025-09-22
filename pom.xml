@@ -60,13 +60,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- H2内存数据库（开发环境） -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        
         <!-- Spring Boot Actuator - 健康检查和指标端点 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
