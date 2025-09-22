@@ -4,7 +4,7 @@ FROM maven:3.8.5-openjdk-17-slim AS build
 # 设置工作目录
 WORKDIR /app
 
-复制Maven配置文件
+#复制Maven配置文件
 COPY .m2/settings-docker.xml /root/.m2/settings.xml
 
 # 复制 pom.xml 文件（利用Docker缓存机制）
