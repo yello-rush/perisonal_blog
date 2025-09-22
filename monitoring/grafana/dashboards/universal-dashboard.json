@@ -54,7 +54,7 @@
       },
       "targets": [
         {
-          "expr": "up{job=\"spring-boot-blog\"}",
+          "expr": "up{job=\"blog-app\"}",
           "refId": "A"
         }
       ],
@@ -183,7 +183,7 @@
       },
       "targets": [
         {
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "expr": "100 - ((node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs\"} * 100) / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs\"})",
           "refId": "A"
         }
       ],
@@ -331,7 +331,7 @@
           "refId": "B"
         },
         {
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "expr": "100 - ((node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs\"} * 100) / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs\"})",
           "legendFormat": "磁盘使用率",
           "refId": "C"
         }
