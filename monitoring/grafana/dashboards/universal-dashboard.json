@@ -50,7 +50,7 @@
       "id": 1,
       "options": {
         "colorMode": "background",
-        "textMode": "value_and_name",
+        "textMode": "name",
         "reduceOptions": {
           "calcs": ["lastNotNull"]
         }
