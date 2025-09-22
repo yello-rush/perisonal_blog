@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "description": "个人博客系统运维监控面板 - 专业运维版",
+  "description": "个人博客系统运维监控面板 - 修复版",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -73,7 +73,7 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "up{job=\"node-exporter\"}",
+          "expr": "up",
           "refId": "A"
         }
       ],
@@ -244,7 +244,7 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "expr": "(1 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs\"})) * 100",
           "refId": "A"
         }
       ],
@@ -482,7 +482,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 10
       },
@@ -513,7 +513,7 @@
         },
         {
           "datasource": "Prometheus",
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "expr": "(1 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs\"})) * 100",
           "legendFormat": "磁盘使用率",
           "refId": "C"
         }
@@ -572,8 +572,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 10
+        "x": 0,
+        "y": 18
       },
       "id": 9,
       "options": {
@@ -661,7 +661,7 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
+        "x": 12,
         "y": 18
       },
       "id": 10,
@@ -692,95 +692,12 @@
       ],
       "title": "网络流量",
       "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "iops"
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 18
-      },
-      "id": 11,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(node_disk_reads_completed_total[5m])",
-          "legendFormat": "磁盘读取 - {{device}}",
-          "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(node_disk_writes_completed_total[5m])",
-          "legendFormat": "磁盘写入 - {{device}}",
-          "refId": "B"
-        }
-      ],
-      "title": "磁盘IO操作",
-      "type": "timeseries"
     }
   ],
   "refresh": "5s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["blog", "ops", "monitoring"],
+  "tags": ["blog", "ops", "monitoring", "fixed"],
   "templating": {
     "list": []
   },
@@ -790,8 +707,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "个人博客运维监控系统",
-  "uid": "personal-blog-ops",
+  "title": "个人博客运维监控系统 - 修复版",
+  "uid": "personal-blog-ops-fixed",
   "version": 1,
   "weekStart": ""
 }
