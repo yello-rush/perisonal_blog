@@ -1,7 +1,5 @@
 version: '3.8'
-
 services:
-  # Spring Boot 应用服务
   blog-app:
     build:
       context: .
@@ -90,7 +88,7 @@ services:
     profiles:
       - redis
       
-prometheus:
+   prometheus:
     image: prom/prometheus:latest
     container_name: blog-prometheus
     ports:
