@@ -75,7 +75,7 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
-          "expr": "up{application=\"personal-blog\"}",
+          "expr": "up{job=\"blog-app\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -150,7 +150,7 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
-          "expr": "mysql_up",
+          "expr": "mysql_up{job=\"mysql-exporter\"}",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
