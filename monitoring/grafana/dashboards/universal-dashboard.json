@@ -50,7 +50,10 @@
       "id": 1,
       "options": {
         "colorMode": "background",
-        "textMode": "name"
+        "textMode": "value_and_name",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        }
       },
       "targets": [
         {
@@ -183,7 +186,7 @@
       },
       "targets": [
         {
-          "expr": "100 - ((node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs\"} * 100) / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs\"})",
+          "expr": "max(100 - ((node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay\"} * 100) / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay\"}))",
           "refId": "A"
         }
       ],
@@ -331,7 +334,7 @@
           "refId": "B"
         },
         {
-          "expr": "100 - ((node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs\"} * 100) / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs\"})",
+          "expr": "max(100 - ((node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay\"} * 100) / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay\"}))",
           "legendFormat": "磁盘使用率",
           "refId": "C"
         }
