@@ -88,11 +88,11 @@ services:
     profiles:
       - redis
       
-   prometheus:
+  prometheus:
     image: prom/prometheus:latest
     container_name: blog-prometheus
     ports:
-      - "9090:9090"
+      - "9091:9090"
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -134,12 +134,19 @@ services:
     ports:
       - "9104:9104"
     environment:
-      - DATA_SOURCE_NAME=root:root123456@(mysql:3306)/personal_blog
+      - DATA_SOURCE_NAME=root:root123456@tcp(mysql:3306)/personal_blog
+    command:
+      - '--config.my-cnf=/etc/mysqld-exporter/.my.cnf'
+      - '--mysqld.address=mysql:3306'
+      - '--mysqld.username=root'
+    volumes:
+      - ./docker/mysql-exporter:/etc/mysqld-exporter:ro
     restart: unless-stopped
     networks:
       - blog-network
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   # Redis Exporter - 缓存监控（可选）
   redis-exporter:
