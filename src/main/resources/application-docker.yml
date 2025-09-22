@@ -76,7 +76,19 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: "*"  # 暴露所有端点
+      base-path: /actuator
   endpoint:
     health:
-      show-details: when-authorized
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: personal-blog
+      environment: docker
+  server:
+    port: 8080
