@@ -97,16 +97,7 @@ prometheus:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
       - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=30d'
-      - '--web.enable-lifecycle'
-      - '--web.enable-admin-api'
     restart: unless-stopped
     networks:
       - blog-network
@@ -118,9 +109,8 @@ prometheus:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -135,15 +125,6 @@ prometheus:
     container_name: blog-node-exporter
     ports:
       - "9100:9100"
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
     networks:
       - blog-network
@@ -178,30 +159,16 @@ prometheus:
     profiles:
       - redis
 
-# 扩展现有网络和数据卷
-networks:
-  blog-network:
-    external: true
-    name: blog-network
-
-volumes:
-  prometheus_data:
-    name: blog_prometheus_data
-  grafana_data:
-    name: blog_grafana_data
 # 网络配置
 networks:
   blog-network:
     driver: bridge
-    name: blog-network
 
 # 数据卷配置
 volumes:
   mysql_data:
-    name: blog_mysql_data
   redis_data:
-    name: blog_redis_data
   app-logs:
-    name: blog_app_logs
   nginx_logs:
-    name: blog_nginx_logs
+  prometheus_data:
+  grafana_data:

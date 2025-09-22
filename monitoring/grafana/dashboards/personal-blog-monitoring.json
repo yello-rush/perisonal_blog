@@ -1,0 +1,36 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "个人博客监控",
+    "tags": ["blog", "monitoring"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "应用状态",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"blog-app\"}",
+            "legendFormat": "应用状态"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "HTTP请求数",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"blog-app\"}[5m])",
+            "legendFormat": "请求/秒"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 4}
+      }
+    ],
+    "time": {"from": "now-1h", "to": "now"},
+    "refresh": "5s"
+  }
+}
