@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "description": "个人博客系统完整监控面板",
+  "description": "个人博客系统运维监控面板 - 专业运维版",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -50,7 +50,7 @@
         }
       },
       "gridPos": {
-        "h": 4,
+        "h": 6,
         "w": 6,
         "x": 0,
         "y": 0
@@ -68,16 +68,16 @@
           ],
           "fields": ""
         },
-        "textMode": "auto"
+        "textMode": "name"
       },
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "up{job=\"spring-boot-blog\"}",
+          "expr": "up{job=\"node-exporter\"}",
           "refId": "A"
         }
       ],
-      "title": "应用状态",
+      "title": "系统状态",
       "type": "stat"
     },
     {
@@ -87,120 +87,8 @@
           "color": {
             "mode": "thresholds"
           },
-          "thresholds": {
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 50
-              },
-              {
-                "color": "red",
-                "value": 100
-              }
-            ]
-          },
-          "unit": "reqps"
-        }
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(http_server_requests_seconds_count{job=\"spring-boot-blog\"}[5m])",
-          "refId": "A"
-        }
-      ],
-      "title": "HTTP请求速率",
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 200
-              },
-              {
-                "color": "red",
-                "value": 500
-              }
-            ]
-          },
-          "unit": "ms"
-        }
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 0
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(http_server_requests_seconds_sum{job=\"spring-boot-blog\"}[5m]) / rate(http_server_requests_seconds_count{job=\"spring-boot-blog\"}[5m]) * 1000",
-          "refId": "A"
-        }
-      ],
-      "title": "平均响应时间",
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "steps": [
               {
@@ -221,12 +109,181 @@
         }
       },
       "gridPos": {
-        "h": 4,
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU使用率",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 95
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "refId": "A"
+        }
+      ],
+      "title": "内存使用率",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 95
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 6,
         "w": 6,
         "x": 18,
         "y": 0
       },
       "id": 4,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "磁盘使用率",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      },
+      "id": 5,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -244,11 +301,11 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "expr": "node_load1",
           "refId": "A"
         }
       ],
-      "title": "CPU使用率",
+      "title": "系统负载 (1分钟)",
       "type": "stat"
     },
     {
@@ -256,190 +313,114 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
           "thresholds": {
-            "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 1000
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "none"
         }
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 4
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
-      "id": 5,
+      "id": 6,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "textMode": "auto"
       },
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "jvm_memory_used_bytes{job=\"spring-boot-blog\",area=\"heap\"}",
-          "legendFormat": "已用堆内存",
+          "expr": "node_procs_running",
           "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "jvm_memory_max_bytes{job=\"spring-boot-blog\",area=\"heap\"}",
-          "legendFormat": "最大堆内存",
-          "refId": "B"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "jvm_memory_used_bytes{job=\"spring-boot-blog\",area=\"nonheap\"}",
-          "legendFormat": "已用非堆内存",
-          "refId": "C"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "jvm_memory_max_bytes{job=\"spring-boot-blog\",area=\"nonheap\"}",
-          "legendFormat": "最大非堆内存",
-          "refId": "D"
         }
       ],
-      "title": "JVM内存使用详情",
-      "type": "timeseries"
+      "title": "运行进程数",
+      "type": "stat"
     },
     {
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
           "thresholds": {
-            "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 86400
+              },
+              {
+                "color": "red",
+                "value": 604800
               }
             ]
           },
-          "unit": "reqps"
+          "unit": "s"
         }
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 4
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
-      "id": 6,
+      "id": 7,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "textMode": "auto"
       },
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "rate(http_server_requests_seconds_count{job=\"spring-boot-blog\"}[5m])",
-          "legendFormat": "HTTP请求速率",
+          "expr": "node_time_seconds - node_boot_time_seconds",
           "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(http_server_requests_seconds_count{job=\"spring-boot-blog\",status=~\"2..\"}[5m])",
-          "legendFormat": "成功请求(2xx)",
-          "refId": "B"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(http_server_requests_seconds_count{job=\"spring-boot-blog\",status=~\"4..\"}[5m])",
-          "legendFormat": "客户端错误(4xx)",
-          "refId": "C"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(http_server_requests_seconds_count{job=\"spring-boot-blog\",status=~\"5..\"}[5m])",
-          "legendFormat": "服务器错误(5xx)",
-          "refId": "D"
         }
       ],
-      "title": "HTTP请求详细统计",
-      "type": "timeseries"
+      "title": "系统运行时间",
+      "type": "stat"
     },
     {
       "datasource": "Prometheus",
@@ -503,9 +484,9 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 10
       },
-      "id": 7,
+      "id": 8,
       "options": {
         "legend": {
           "calcs": [],
@@ -526,24 +507,18 @@
         },
         {
           "datasource": "Prometheus",
-          "expr": "avg(rate(node_cpu_seconds_total{mode=\"system\"}[5m])) * 100",
-          "legendFormat": "系统CPU",
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "内存使用率",
           "refId": "B"
         },
         {
           "datasource": "Prometheus",
-          "expr": "avg(rate(node_cpu_seconds_total{mode=\"user\"}[5m])) * 100",
-          "legendFormat": "用户CPU",
+          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "legendFormat": "磁盘使用率",
           "refId": "C"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "avg(rate(node_cpu_seconds_total{mode=\"iowait\"}[5m])) * 100",
-          "legendFormat": "IO等待",
-          "refId": "D"
         }
       ],
-      "title": "系统CPU使用详情",
+      "title": "系统资源使用趋势",
       "type": "timeseries"
     },
     {
@@ -591,125 +566,14 @@
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "short"
         }
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 12
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "expr": "node_memory_MemTotal_bytes",
-          "legendFormat": "总内存",
-          "refId": "A"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
-          "legendFormat": "已用内存",
-          "refId": "B"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "node_memory_MemAvailable_bytes",
-          "legendFormat": "可用内存",
-          "refId": "C"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "node_memory_Cached_bytes",
-          "legendFormat": "缓存",
-          "refId": "D"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "node_memory_Buffers_bytes",
-          "legendFormat": "缓冲区",
-          "refId": "E"
-        }
-      ],
-      "title": "系统内存使用详情",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 95
-              }
-            ]
-          },
-          "unit": "percent"
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 20
+        "y": 10
       },
       "id": 9,
       "options": {
@@ -726,18 +590,24 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
-          "legendFormat": "根分区使用率",
+          "expr": "node_load1",
+          "legendFormat": "1分钟负载",
           "refId": "A"
         },
         {
           "datasource": "Prometheus",
-          "expr": "100 - ((node_filesystem_avail_bytes{fstype!=\"tmpfs\"} * 100) / node_filesystem_size_bytes{fstype!=\"tmpfs\"})",
-          "legendFormat": "{{mountpoint}} 使用率",
+          "expr": "node_load5",
+          "legendFormat": "5分钟负载",
           "refId": "B"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "node_load15",
+          "legendFormat": "15分钟负载",
+          "refId": "C"
         }
       ],
-      "title": "磁盘使用率",
+      "title": "系统负载趋势",
       "type": "timeseries"
     },
     {
@@ -785,14 +655,14 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "binBps"
         }
       },
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 20
+        "x": 0,
+        "y": 18
       },
       "id": 10,
       "options": {
@@ -809,30 +679,18 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "mysql_global_status_threads_connected",
-          "legendFormat": "MySQL活跃连接数",
+          "expr": "rate(node_network_receive_bytes_total{device!=\"lo\"}[5m])",
+          "legendFormat": "入站流量 - {{device}}",
           "refId": "A"
         },
         {
           "datasource": "Prometheus",
-          "expr": "mysql_global_status_max_used_connections",
-          "legendFormat": "MySQL最大连接数",
+          "expr": "rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])",
+          "legendFormat": "出站流量 - {{device}}",
           "refId": "B"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "mysql_global_status_queries",
-          "legendFormat": "MySQL查询总数",
-          "refId": "C"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "rate(mysql_global_status_queries[5m])",
-          "legendFormat": "MySQL查询速率",
-          "refId": "D"
         }
       ],
-      "title": "数据库连接和查询统计",
+      "title": "网络流量",
       "type": "timeseries"
     },
     {
@@ -880,14 +738,14 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "iops"
         }
       },
       "gridPos": {
         "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 28
+        "w": 12,
+        "x": 12,
+        "y": 18
       },
       "id": 11,
       "options": {
@@ -904,43 +762,25 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "jvm_threads_live_threads{job=\"spring-boot-blog\"}",
-          "legendFormat": "活跃线程数",
+          "expr": "rate(node_disk_reads_completed_total[5m])",
+          "legendFormat": "磁盘读取 - {{device}}",
           "refId": "A"
         },
         {
           "datasource": "Prometheus",
-          "expr": "jvm_threads_daemon_threads{job=\"spring-boot-blog\"}",
-          "legendFormat": "守护线程数",
+          "expr": "rate(node_disk_writes_completed_total[5m])",
+          "legendFormat": "磁盘写入 - {{device}}",
           "refId": "B"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "jvm_threads_peak_threads{job=\"spring-boot-blog\"}",
-          "legendFormat": "线程峰值",
-          "refId": "C"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "process_files_open_files{job=\"spring-boot-blog\"}",
-          "legendFormat": "打开文件数",
-          "refId": "D"
-        },
-        {
-          "datasource": "Prometheus",
-          "expr": "process_files_max_files{job=\"spring-boot-blog\"}",
-          "legendFormat": "最大文件数",
-          "refId": "E"
         }
       ],
-      "title": "JVM线程和文件句柄统计",
+      "title": "磁盘IO操作",
       "type": "timeseries"
     }
   ],
   "refresh": "5s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["blog", "monitoring", "complete"],
+  "tags": ["blog", "ops", "monitoring"],
   "templating": {
     "list": []
   },
@@ -950,8 +790,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "个人博客完整监控系统",
-  "uid": "personal-blog-complete",
+  "title": "个人博客运维监控系统",
+  "uid": "personal-blog-ops",
   "version": 1,
   "weekStart": ""
 }
