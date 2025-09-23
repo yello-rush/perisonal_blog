@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import org.example.model.Blog;
-import org.example.model.Category;
 import org.example.model.Comment;
 import org.example.service.BlogService;
 import org.example.service.CategoryService;
@@ -10,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.lang.management.ManagementFactory;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -67,8 +68,8 @@ public class BlogController {
         // 添加分类列表，用于导航栏显示
         model.addAttribute("categories", categoryService.getAllCategories());
         
-        // 添加网站启动时间（网站创建时间）
-        LocalDateTime startTime = LocalDateTime.of(2024, 9, 1, 0, 0, 0);
+        // 添加应用启动时间（使用JVM启动时间）
+        LocalDateTime startTime = getApplicationStartTime();
         model.addAttribute("startTime", startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         return "index";
     }
@@ -172,5 +173,19 @@ public class BlogController {
         return commentService.getTopLevelCommentsByBlogId(blogId);
     }
     
+    /**
+     * 获取应用启动时间
+     * 使用JVM启动时间作为网站运行时间的起始点，与监控平台的系统运行时间概念保持一致
+     * 
+     * @return 应用启动时间
+     */
+    private LocalDateTime getApplicationStartTime() {
+        // 获取JVM启动时间戳（毫秒）
+        long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        
+        // 转换为LocalDateTime
+        Instant instant = Instant.ofEpochMilli(jvmStartTime);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
 
 }
